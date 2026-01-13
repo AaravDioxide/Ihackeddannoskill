@@ -61,21 +61,26 @@
             justify-content: center;
             margin: 30px 0;
             flex-wrap: wrap;
+            /* Added align-items to ensure images of different heights align nicely */
+            align-items: flex-start; 
         }
 
         .images img {
             width: 260px;
-            height: 360px;
-            object-fit: cover;
+            /* CHANGED: height auto allows the image to scale naturally based on resolution */
+            height: auto; 
+            /* REMOVED: object-fit: cover; so the image is not cropped */
             border-radius: 18px;
             transition: transform 0.35s ease, box-shadow 0.35s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             background-color: #222; /* Placeholder color if img loads slow */
+            display: block; /* Ensures no bottom whitespace glitch */
         }
 
         .images img:hover {
             transform: translateY(-8px) scale(1.03);
             box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            z-index: 10;
         }
 
         .content {
@@ -180,7 +185,7 @@
             }
             .images img {
                 width: 220px;
-                height: 300px;
+                /* Height auto is inherited here automatically */
             }
         }
     </style>
@@ -261,19 +266,19 @@
                 "1", 
                 "2",
                 "3",
-				"4",
-				"5",
-				"6",
-				"7",
-				"8",
-				"9",
-				"10",
-				"11",
-				"12",
-				"13",
-				"14",
-				"15",
-				"16",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16",
                 "1000"
             ];
 

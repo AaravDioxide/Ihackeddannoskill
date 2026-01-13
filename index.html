@@ -18,6 +18,7 @@
             background: radial-gradient(circle at top, #1a1a1a, #000);
             color: #fff;
             display: flex;
+            flex-direction: column; /* Changed to column to handle the text at top */
             align-items: center;
             justify-content: center;
         }
@@ -30,6 +31,7 @@
             border-radius: 22px;
             padding: 32px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            margin-top: 20px;
         }
 
         .header {
@@ -52,6 +54,7 @@
             font-size: 1.05rem;
         }
 
+        /* Image Gallery Styling */
         .images {
             display: flex;
             gap: 20px;
@@ -67,6 +70,7 @@
             border-radius: 18px;
             transition: transform 0.35s ease, box-shadow 0.35s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background-color: #222; /* Placeholder color if img loads slow */
         }
 
         .images img:hover {
@@ -115,6 +119,61 @@
             font-weight: 600;
         }
 
+        /* --- DISCLAIMER POPUP CSS --- */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .modal-content h2 {
+            color: #ff3b3b;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            line-height: 1.5;
+            color: #ccc;
+        }
+
+        .modal-content button {
+            background-color: #ff3b3b;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .modal-content button:hover {
+            background-color: #d32f2f;
+        }
+
         @media (max-width: 600px) {
             .header h1 {
                 font-size: 2.2rem;
@@ -127,25 +186,27 @@
     </style>
 </head>
 <body>
-DanNoSkill Fan Website (NOT ASSOCIATED AT ALL WITH DANNOSKILL)
-	DanNoSkill Fan Website (NOT ASSOCIATED AT ALL WITH DANNOSKILL)
-	DanNoSkill Fan Website (NOT ASSOCIATED AT ALL WITH DANNOSKILL)
+
+    <div style="text-align: center; padding: 20px; font-weight: bold; opacity: 0.5;">
+        DanNoSkill Fan Website (NOT ASSOCIATED AT ALL WITH DANNOSKILL)<br>
+        DanNoSkill Fan Website (NOT ASSOCIATED AT ALL WITH DANNOSKILL)<br>
+        DanNoSkill Fan Website (NOT ASSOCIATED AT ALL WITH DANNOSKILL)
+    </div>
+
     <div class="card">
         <div class="header">
             <h1>danno<span>skill</span></h1>
             <p>You heard when kimi bankrupt an f1 team</p>
         </div>
 
-        <div class="images">
-            <img src="img1.png" alt="Dannoskill image 1">
-            <img src="img2.png" alt="Dannoskill image 2">
-        </div>
+        <div class="images" id="image-gallery">
+            </div>
 
         <div class="content">
             <h2>Dannoskill × Fernando Alonso</h2>
             <p>
                 WHAT UP DANNOSKILL, YOU ARE A LEGEND MAN I LOVE YOU, This is a very sexy website btw
-		KEEP JORKING OFF
+                KEEP JORKING OFF
             </p>
 
             <div class="highlight">
@@ -159,8 +220,79 @@ DanNoSkill Fan Website (NOT ASSOCIATED AT ALL WITH DANNOSKILL)
         </footer>
     </div>
 
+    <div id="disclaimer-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>⚠️ Unofficial Fan Site</h2>
+            <p>
+                This website is built by a <strong>DannoSkill fan</strong>. 
+            </p>
+            <p>
+                It is <strong>not</strong> actually DannoSkill, nor is it legally affiliated, associated, or endorsed by him in any way. This is just a fan tribute project.
+            </p>
+            <button id="accept-btn">I Understand</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // --- 1. DISCLAIMER POPUP LOGIC ---
+            const modal = document.getElementById('disclaimer-modal');
+            const btn = document.getElementById('accept-btn');
+
+            // Check if user has already clicked "I Understand" this session
+            if (!sessionStorage.getItem('disclaimerAccepted')) {
+                modal.style.display = "flex"; // Show popup
+            }
+
+            btn.addEventListener('click', () => {
+                modal.style.display = "none"; // Hide popup
+                sessionStorage.setItem('disclaimerAccepted', 'true'); // Save preference
+            });
+
+
+            // --- 2. AUTOMATIC IMAGE LOADER ---
+            const gallery = document.getElementById('image-gallery');
+
+            // !!! EDIT THIS LIST !!! 
+            // Add the numbers of the images you want to load here.
+            // Example: "334598349" becomes "img334598349.png"
+            const imageNumbers = [
+                "1", 
+                "2",
+                "3",
+				"4",
+				"5",
+				"6",
+				"7",
+				"8",
+				"9",
+				"10",
+				"11",
+				"12",
+				"13",
+				"14",
+				"15",
+				"16",
+                "1000"
+            ];
+
+            // This loop creates the HTML for each image
+            imageNumbers.forEach(num => {
+                const img = document.createElement('img');
+                img.src = `img${num}.png`; 
+                img.alt = `Dannoskill image ${num}`;
+                
+                // Optional: Hide image if it doesn't exist to prevent ugly icons
+                img.onerror = function() {
+                    console.log(`Could not load img${num}.png`);
+                    this.style.display = 'none';
+                };
+
+                gallery.appendChild(img);
+            });
+        });
+    </script>
+
 </body>
 </html>
-
-
-

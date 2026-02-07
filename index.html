@@ -18,9 +18,10 @@
             background: radial-gradient(circle at top, #1a1a1a, #000);
             color: #fff;
             display: flex;
-            flex-direction: column; /* Changed to column to handle the text at top */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding-bottom: 50px; /* Added padding for scrolling space */
         }
 
         .card {
@@ -61,20 +62,17 @@
             justify-content: center;
             margin: 30px 0;
             flex-wrap: wrap;
-            /* Added align-items to ensure images of different heights align nicely */
             align-items: flex-start; 
         }
 
         .images img {
             width: 260px;
-            /* CHANGED: height auto allows the image to scale naturally based on resolution */
             height: auto; 
-            /* REMOVED: object-fit: cover; so the image is not cropped */
             border-radius: 18px;
             transition: transform 0.35s ease, box-shadow 0.35s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background-color: #222; /* Placeholder color if img loads slow */
-            display: block; /* Ensures no bottom whitespace glitch */
+            background-color: #222;
+            display: block; 
         }
 
         .images img:hover {
@@ -112,6 +110,77 @@
             color: #ff3b3b;
         }
 
+        /* --- NEW JOSHY SECTION STYLES --- */
+        .joshy-shrine {
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #ff3b3b;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .joshy-shrine h2 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 10px #ff3b3b;
+            margin-bottom: 20px;
+        }
+
+        .week-display {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .day-badge {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #888;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        /* Style for Saturday */
+        .day-badge.saturday {
+            background: #ff3b3b;
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 59, 59, 0.6);
+            transform: scale(1.1);
+            border: 2px solid #fff;
+        }
+
+        .joshy-message {
+            font-style: italic;
+            color: #ccc;
+            margin-top: 15px;
+        }
+
+        .is-joshy-day-text {
+            color: #ff3b3b;
+            font-weight: bold;
+            font-size: 1.2rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
         footer {
             margin-top: 30px;
             text-align: center;
@@ -126,7 +195,7 @@
 
         /* --- DISCLAIMER POPUP CSS --- */
         .modal-overlay {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             z-index: 9999;
             left: 0;
@@ -185,7 +254,6 @@
             }
             .images img {
                 width: 220px;
-                /* Height auto is inherited here automatically */
             }
         }
     </style>
@@ -220,6 +288,23 @@
             </div>
         </div>
 
+        <div class="joshy-shrine">
+            <h2>🙇 ALL HAIL JOSHYMADOOD 🙇</h2>
+            <p>The Calendar has spoken.</p>
+            
+            <div class="week-display">
+                <div class="day-badge">SUN</div>
+                <div class="day-badge">MON</div>
+                <div class="day-badge">TUE</div>
+                <div class="day-badge">WED</div>
+                <div class="day-badge">THU</div>
+                <div class="day-badge">FRI</div>
+                <div class="day-badge saturday">SAT</div>
+            </div>
+
+            <p id="joshy-status" class="joshy-message">Waiting for the holy day...</p>
+        </div>
+
         <footer>
             dannoskill.com — built by <span>Aarav</span>
         </footer>
@@ -245,50 +330,25 @@
             const modal = document.getElementById('disclaimer-modal');
             const btn = document.getElementById('accept-btn');
 
-            // Check if user has already clicked "I Understand" this session
             if (!sessionStorage.getItem('disclaimerAccepted')) {
-                modal.style.display = "flex"; // Show popup
+                modal.style.display = "flex"; 
             }
 
             btn.addEventListener('click', () => {
-                modal.style.display = "none"; // Hide popup
-                sessionStorage.setItem('disclaimerAccepted', 'true'); // Save preference
+                modal.style.display = "none"; 
+                sessionStorage.setItem('disclaimerAccepted', 'true'); 
             });
 
 
             // --- 2. AUTOMATIC IMAGE LOADER ---
             const gallery = document.getElementById('image-gallery');
+            const imageNumbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "1000"];
 
-            // !!! EDIT THIS LIST !!! 
-            // Add the numbers of the images you want to load here.
-            // Example: "334598349" becomes "img334598349.png"
-            const imageNumbers = [
-                "1", 
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9",
-                "10",
-                "11",
-                "12",
-                "13",
-                "14",
-                "15",
-                "16",
-                "1000"
-            ];
-
-            // This loop creates the HTML for each image
             imageNumbers.forEach(num => {
                 const img = document.createElement('img');
                 img.src = `img${num}.png`; 
                 img.alt = `Dannoskill image ${num}`;
                 
-                // Optional: Hide image if it doesn't exist to prevent ugly icons
                 img.onerror = function() {
                     console.log(`Could not load img${num}.png`);
                     this.style.display = 'none';
@@ -296,6 +356,33 @@
 
                 gallery.appendChild(img);
             });
+
+            // --- 3. JOSHY DAY CALCULATOR ---
+            const statusText = document.getElementById('joshy-status');
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 is Sunday, 6 is Saturday
+
+            if (dayOfWeek === 6) {
+                // It IS Saturday
+                statusText.innerHTML = "🚨 IT IS SATURDAY! <strong>IT IS JOSHY DAY!</strong> ALL HAIL! 🚨";
+                statusText.classList.add('is-joshy-day-text');
+            } else {
+                // It is NOT Saturday
+                const daysUntil = 6 - dayOfWeek; 
+                let msg = "";
+                if(daysUntil < 0) {
+                     // If today is Sunday (0), daysUntil is 6. Logic holds.
+                     // But if we want next sat:
+                     msg = "Joshy day is in 6 days.";
+                } else {
+                     msg = `Prepare yourself. Joshy day arrives in ${daysUntil} days.`;
+                }
+                
+                // Correction for Sunday (0) to Sat (6)
+                if(dayOfWeek === 0) msg = "Joshy day is in 6 days.";
+
+                statusText.innerText = msg;
+            }
         });
     </script>
 
